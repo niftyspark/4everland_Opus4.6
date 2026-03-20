@@ -72,7 +72,7 @@
 
 .new-chat-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 40px rgba(108, 92, 231, 0.3);
+  box-shadow: 0 0 40px var(--accent-glow);
 }
 
 .new-chat-btn:active {
