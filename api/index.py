@@ -40,8 +40,8 @@ def fetch_composio_tools():
 
     try:
         headers = {"x-api-key": COMPOSIO_API_KEY}
-        # Fetch important tools to avoid overwhelming the model
-        resp = requests.get(f"{COMPOSIO_API_BASE}/tools?important=true",
+        # Fetch all tools to ensure visibility
+        resp = requests.get(f"{COMPOSIO_API_BASE}/tools",
                             headers=headers,
                             timeout=10)
         resp.raise_for_status()
@@ -93,7 +93,11 @@ def get_models():
 @app.route("/api/tools", methods=["GET"])
 def get_tools():
     tools = fetch_composio_tools()
-    return jsonify({"tools": tools, "count": len(tools)})
+    return jsonify({
+        "tools": tools, 
+        "count": len(tools),
+        "api_configured": bool(COMPOSIO_API_KEY and COMPOSIO_API_KEY != "your_composio_api_key_here")
+    })
 
 
 @app.route("/", defaults={"path": ""})
