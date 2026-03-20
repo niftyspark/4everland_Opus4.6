@@ -11,79 +11,63 @@ function Sidebar() {
     createNewChat,
     deleteChat,
     sidebarOpen,
+    setSidebarOpen,
     toolsCount,
   } = useChatContext();
-  
-  const [activeTab, setActiveTab] = React.useState('chats'); // 'chats' or 'system'
 
   const handleChatClick = (chatId) => {
     setActiveChatId(chatId);
+    if (window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
+  };
+
+  const handleDelete = (e, chatId) => {
+    e.stopPropagation();
+    deleteChat(chatId);
   };
 
   return (
-    <aside className={`sidebar glass ${sidebarOpen ? '' : 'collapsed'}`}>
+    <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
       <div className="sidebar-header">
         <div className="logo">
-          <div className="logo-glow" />
-          <span className="logo-text">4EVERLAND</span>
+          <div className="logo-icon">⚡</div>
+          <span className="logo-text">4EVERLAND AI</span>
         </div>
       </div>
 
-      <div className="sidebar-tabs">
-        <button 
-          className={`tab-btn ${activeTab === 'chats' ? 'active' : ''}`}
-          onClick={() => setActiveTab('chats')}
-        >
-          Chats
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'system' ? 'active' : ''}`}
-          onClick={() => setActiveTab('system')}
-        >
-          System
-        </button>
-      </div>
+      <button className="new-chat-btn" onClick={createNewChat}>
+        <span>＋</span> New Chat
+      </button>
 
-      {activeTab === 'chats' ? (
-        <>
-          <button className="new-chat-btn" onClick={createNewChat}>
-            New Experience
-          </button>
+      {toolsCount > 0 && (
+        <div className="tools-status">
+          <span className="tools-icon">🛠️</span>
+          <span className="tools-text">{toolsCount} Composio Tools Active</span>
+        </div>
+      )}
 
-          <div className="chat-list">
-            {chats.map((chat) => (
-              <div
-                key={chat.id}
-                className={`chat-item ${chat.id === activeChatId ? 'active' : ''}`}
-                onClick={() => handleChatClick(chat.id)}
-              >
-                <div className="active-indicator" />
-                <span className="chat-title">{chat.title}</span>
-                <button
-                  className="delete-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteChat(chat.id);
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+      <div className="chat-list">
+        {chats.map((chat) => (
+          <div
+            key={chat.id}
+            className={`chat-item ${chat.id === activeChatId ? 'active' : ''}`}
+            onClick={() => handleChatClick(chat.id)}
+          >
+            <span className="chat-icon">💬</span>
+            <span className="chat-title">{chat.title}</span>
+            <button
+              className="delete-btn"
+              onClick={(e) => handleDelete(e, chat.id)}
+              title="Delete"
+            >
+              🗑
+            </button>
           </div>
-        </>
-      ) : (
-        <div className="system-prompt-tab">
-           <ModelSettings />
-        </div>
-      )}
+        ))}
+      </div>
 
-      {toolsCount > 0 && activeTab === 'chats' && (
-        <div className="tools-badge">
-          <div className="pulse-dot" />
-          {toolsCount} Connected Tools
-        </div>
-      )}
+      <ModelSettings />
     </aside>
   );
 }
