@@ -8,7 +8,7 @@ function App() {
   const { sidebarOpen, setSidebarOpen } = useChatContext();
 
   return (
-    <div className="app" style={{ display: 'flex', height: '100vh' }}>
+    <div className="app" style={{ display: 'flex', height: '100vh', width: '100vw' }}>
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -25,7 +25,14 @@ function App() {
         />
       )}
       <Sidebar />
-      <ChatArea />
+      <div style={{ flex: 1, display: 'flex' }}>
+        <div style={{ flex: 1, minWidth: '400px' }}>
+          <ChatArea />
+        </div>
+        <div style={{ width: '400px', borderLeft: '1px solid var(--border-color, #e5e7eb)' }}>
+          <iframe src="/chibibot/index.html" style={{ width: '100%', height: '100%', border: 'none' }} title="ChibiBot Avatar" />
+        </div>
+      </div>
       <Toast />
     </div>
   );

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon_atoms.ico" type="image/x-icon">
+    <title>Chibi Avatar Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script type="module" crossorigin src="/assets/index-DMMiVIZe.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-hnRytP0s.css">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-ring"></div>
+            <p class="loader-text">Loading 3D Avatar...</p>
+            <p class="loader-subtext">Preparing your chibi companion</p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="hidden">
+        <!-- 3D Canvas Container -->
+        <div id="canvas-container"></div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-palette"></i> Backgrounds</h2>
+            </div>
+            <div class="bg-grid" id="bg-grid">
+                <div class="bg-thumb active" data-bg="mountains" title="Mountains">
+                    <img src="https://mgx-backend-cdn.metadl.com/generate/images/1045434/2026-03-20/f42780d8-bcb2-4165-b95e-aef6b59a54a8.png" alt="Mountains">
+                    <span>Mountains</span>
+                </div>
+                <div class="bg-thumb" data-bg="forest" title="Forest">
+                    <img src="https://mgx-backend-cdn.metadl.com/generate/images/1045434/2026-03-20/55c003bf-512a-435d-b564-2fe0e936a34d.png" alt="Forest">
+                    <span>Forest</span>
+                </div>
+                <div class="bg-thumb" data-bg="beach" title="Beach">
+                    <img src="https://mgx-backend-cdn.metadl.com/generate/images/1045434/2026-03-20/1b7f32bb-22aa-4b20-8571-681830e00323.png" alt="Beach">
+                    <span>Beach</span>
+                </div>
+                <div class="bg-thumb" data-bg="sunset" title="Sunset">
+                    <img src="https://mgx-backend-cdn.metadl.com/generate/images/1045434/2026-03-20/00dbeb51-af94-4a9d-b2e2-0560e362d112.png" alt="Sunset">
+                    <span>Sunset</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+                <div class="setting-item">
+                    <label>Voice Speed</label>
+                    <input type="range" id="voice-speed" min="0.5" max="2" step="0.1" value="1">
+                </div>
+                <div class="setting-item">
+                    <label>Avatar Size</label>
+                    <input type="range" id="avatar-size" min="0.5" max="2" step="0.1" value="1">
+                </div>
+            </div>
+
+            <div class="sidebar-section status-section">
+                <h3><i class="fas fa-info-circle"></i> Status</h3>
+                <div class="status-item">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span id="status-text">Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div id="chat-panel">
+            <div class="chat-header">
+                <div class="chat-avatar-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h3>Chibi Assistant</h3>
+                    <span class="chat-status" id="chat-status">Online</span>
+                </div>
+                <button id="toggle-chat" class="icon-btn" title="Minimize">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">
+                    <div class="message-bubble">
+                        <p>Hey there! I'm your chibi companion! 🌟 Type something and I'll turn around to chat with you!</p>
+                    </div>
+                    <span class="message-time">Just now</span>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <div class="typing-indicator hidden" id="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+                <form id="chat-form">
+                    <input type="text" id="chat-input" placeholder="Say something to your chibi..." autocomplete="off">
+                    <button type="submit" id="send-btn" title="Send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toggle Sidebar Button -->
+        <button id="toggle-sidebar" class="icon-btn floating-btn" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+</body>
+
+</html>
