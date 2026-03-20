@@ -6,6 +6,12 @@ export async function fetchModels() {
   return res.json();
 }
 
+export async function fetchTools() {
+  const res = await fetch(`${API_BASE}/tools`);
+  if (!res.ok) throw new Error('Failed to fetch tools');
+  return res.json();
+}
+
 export async function sendChatMessage({
   messages,
   model,

@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { generateId, truncate } from '../utils/helpers';
-import { fetchModels as apiFetchModels, sendChatMessage, parseSSEStream, sendNonStreaming } from '../services/api';
+import {
+  fetchModels as apiFetchModels,
+  fetchTools as apiFetchTools,
+  sendChatMessage,
+  parseSSEStream,
+  sendNonStreaming
+} from '../services/api';
 
 const ChatContext = createContext(null);
 
@@ -40,6 +46,8 @@ export function ChatProvider({ children }) {
   const [streamingContent, setStreamingContent] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [toasts, setToasts] = useState([]);
+  const [tools, setTools] = useState([]);
+  const [toolsCount, setToolsCount] = useState(0);
 
   const abortControllerRef = useRef(null);
 
@@ -62,6 +70,16 @@ export function ChatProvider({ children }) {
           'z-ai/glm-5-turbo',
           'x-ai/grok-4.20-multi-agent-beta',
         ]);
+      });
+
+    apiFetchTools()
+      .then((data) => {
+        setTools(data.tools);
+        setToolsCount(data.count);
+      })
+      .catch(() => {
+        setTools([]);
+        setToolsCount(0);
       });
   }, []);
 
@@ -175,8 +193,33 @@ export function ChatProvider({ children }) {
           signal: abortControllerRef.current.signal,
         });
 
+        const contentType = response.headers.get('Content-Type');
         let resolved = false;
 
+        // If backend returned JSON (likely due to tool calling forcing non-stream)
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          const finalContent = data.choices?.[0]?.message?.content || 'No response received.';
+          
+          const assistantMsg = {
+            role: 'assistant',
+            content: finalContent,
+            timestamp: Date.now(),
+          };
+          
+          setChats((prev) =>
+            prev.map((c) => {
+              if (c.id !== chat.id) return c;
+              const msgs = [...newMessages, assistantMsg];
+              return { ...c, messages: msgs };
+            })
+          );
+          
+          setIsGenerating(false);
+          return;
+        }
+
+        // Otherwise handle as SSE stream
         await new Promise((resolve, reject) => {
           parseSSEStream(
             response,
@@ -327,6 +370,8 @@ export function ChatProvider({ children }) {
     deleteChat,
     sendMessage,
     stopGeneration,
+    tools,
+    toolsCount,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

@@ -90,6 +90,12 @@ def get_models():
     return jsonify({"models": SUPPORTED_MODELS, "default": DEFAULT_MODEL})
 
 
+@app.route("/api/tools", methods=["GET"])
+def get_tools():
+    tools = fetch_composio_tools()
+    return jsonify({"tools": tools, "count": len(tools)})
+
+
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def serve(path):
@@ -141,6 +147,8 @@ def chat():
     }
     if tools:
         payload["tools"] = tools
+        # Force non-streaming when tools are present to ensure the tool-call loop works
+        return iterate_chat_completion(headers, payload)
 
     headers = {
         "Authorization": f"Bearer {API_KEY}",
@@ -150,8 +158,6 @@ def chat():
     }
 
     if stream:
-        # For simplicity, we don't handle tool calls in stream for now
-        # Or we can disable stream if tools are requested
         return Response(
             stream_with_context(_stream_response(headers, payload)),
             content_type="text/event-stream",

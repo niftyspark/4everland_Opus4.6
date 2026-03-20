@@ -12,6 +12,7 @@ function Sidebar() {
     deleteChat,
     sidebarOpen,
     setSidebarOpen,
+    toolsCount,
   } = useChatContext();
 
   const handleChatClick = (chatId) => {
@@ -38,6 +39,13 @@ function Sidebar() {
       <button className="new-chat-btn" onClick={createNewChat}>
         <span>＋</span> New Chat
       </button>
+
+      {toolsCount > 0 && (
+        <div className="tools-status">
+          <span className="tools-icon">🛠️</span>
+          <span className="tools-text">{toolsCount} Composio Tools Active</span>
+        </div>
+      )}
 
       <div className="chat-list">
         {chats.map((chat) => (
